@@ -1,0 +1,13 @@
+# IDE
+.vscode
+.idea
+
+# Node
+node_modules
+
+# Dev
+tesseract/
+src/
+
+# NPM
+package-lock.json
