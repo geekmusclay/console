@@ -1,0 +1,19 @@
+{
+    "src": "./tesseract",
+    "commands": {
+        "pages": {
+            "params": [
+                "name"
+            ],
+            "dir": [
+                "./src/pages"
+            ],
+            "files": [
+                {
+                    "from": "./tesseract/Page.vue",
+                    "to": "./src/pages/{name}Page.vue"
+                }
+            ]
+        }
+    }
+}
