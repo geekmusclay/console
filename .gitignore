@@ -8,6 +8,7 @@ node_modules
 # Dev
 tesseract/
 src/
+tesseract.json
 
 # NPM
 package-lock.json
