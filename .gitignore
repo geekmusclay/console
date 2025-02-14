@@ -7,8 +7,9 @@ node_modules
 
 # Dev
 tesseract/
-src/
 tesseract.json
+console.js
+coverage
 
 # NPM
 package-lock.json
