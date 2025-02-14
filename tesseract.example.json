@@ -1,0 +1,34 @@
+{
+    "root": "./tesseract",
+    "commands": {
+        "page": {
+            "params": [
+                "name"
+            ],
+            "dir": [
+                "./src/pages"
+            ],
+            "files": [
+                {
+                    "from": "./tesseract/Page.vue",
+                    "to": "./src/pages/{name}Page.vue"
+                }
+            ]
+        },
+        "component": {
+            "params": [
+                "name"
+            ],
+            "dir": [
+                "./src/components",
+                "./test/components"
+            ],
+            "files": [
+                {
+                    "from": "./tesseract/Component.vue",
+                    "to": "./src/components/{name}component.vue"
+                }
+            ]
+        }
+    }
+}
