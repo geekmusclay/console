@@ -7,10 +7,6 @@ To install this package use :
 ```bash
 npm install https://github.com/geekmusclay/console
 ```
-In the future maybe : 
-```bash
-npm install @geekmusclay/console
-```
 
 ## Usage
 
@@ -58,11 +54,16 @@ This is an example configuration file :
 const { Tesseract } = require('@geekmusclay/console');
 
 const terminal = new Tesseract('./config.json');
+
 terminal.hook('beforeAll', () => {
     console.log('beforeAll');
 });
 
-terminal.load().handle();
+try {
+    terminal.load().handle();
+} catch (error) {
+    console.error(error.message);
+}
 ```
 
 ### In ES Modules
