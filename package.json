@@ -1,20 +1,40 @@
 {
-  "name": "tesseract",
+  "name": "@geekmusclay/console",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A flexible console management system for JavaScript applications",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "browser": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "test": "jest --coverage",
-    "build": "tsc"
+    "build": "rollup -c",
+    "prepare": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": { },
+  "keywords": [
+    "console",
+    "terminal",
+    "cli",
+    "command-line"
+  ],
+  "author": "GeekmuscLay",
+  "license": "MIT",
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
   "devDependencies": {
-    "jest": "^29.7.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
     "@types/node": "^22.13.1",
     "eslint": "^9.20.0",
+    "jest": "^29.7.0",
+    "rollup": "^4.9.0",
+    "rollup-plugin-dts": "^6.0.0",
     "typescript": "^5.7.3"
   }
 }
