@@ -12,8 +12,9 @@ export default class Tesseract {
      * Add a hook for a specific event
      * @param event The event to hook into ('beforeAll', 'afterAll', 'beforeCommand', 'afterCommand', 'onError')
      * @param callback The callback function to execute
+     * @param command Optional command name to restrict the hook to
      */
-    hook(event: keyof CommandHooksInterface, callback: CommandHook): Tesseract;
+    hook(event: keyof CommandHooksInterface, callback: CommandHook, command?: string): Tesseract;
     /**
      * Execute hooks for a specific event
      * @param event The event to execute hooks for

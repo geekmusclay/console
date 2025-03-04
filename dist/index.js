@@ -90,11 +90,18 @@ class Tesseract {
      * Add a hook for a specific event
      * @param event The event to hook into ('beforeAll', 'afterAll', 'beforeCommand', 'afterCommand', 'onError')
      * @param callback The callback function to execute
+     * @param command Optional command name to restrict the hook to
      */
-    hook(event, callback) {
+    hook(event, callback, command) {
         if (this.hooks[event]) {
-            this.hooks[event].push(callback);
-            this.logger.debug(`Added hook for event: ${event}`);
+            const hookConfig = {
+                callback,
+                command
+            };
+            this.hooks[event].push(hookConfig);
+            this.logger.debug(command
+                ? `Added hook for event: ${event} on command: ${command}`
+                : `Added hook for event: ${event} (global)`);
         }
         return this;
     }
@@ -106,14 +113,20 @@ class Tesseract {
     async executeHooks(event, ...args) {
         const hooks = this.hooks[event];
         if (hooks && hooks.length > 0) {
-            this.logger.debug(`Executing ${hooks.length} hooks for event: ${event}`);
-            for (const hook of hooks) {
-                try {
-                    await hook(...args);
-                }
-                catch (error) {
-                    this.logger.error(`Error executing ${event} hook:`, error);
-                    await this.executeHooks('onError', error);
+            const currentCommand = this.command;
+            const relevantHooks = hooks.filter(hook => !hook.command || hook.command === currentCommand);
+            if (relevantHooks.length > 0) {
+                this.logger.debug(`Executing ${relevantHooks.length} hooks for event: ${event}` +
+                    (currentCommand ? ` on command: ${currentCommand}` : ' (global)'));
+                for (const hook of relevantHooks) {
+                    try {
+                        await hook.callback(...args);
+                    }
+                    catch (error) {
+                        this.logger.error(`Error executing ${event} hook` +
+                            (hook.command ? ` for command ${hook.command}` : ''), error);
+                        await this.executeHooks('onError', error);
+                    }
                 }
             }
         }

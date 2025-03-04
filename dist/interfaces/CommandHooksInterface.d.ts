@@ -1,10 +1,14 @@
 export interface CommandHook {
     (...args: any[]): void | Promise<void>;
 }
+export interface HookConfig {
+    callback: CommandHook;
+    command?: string;
+}
 export default interface CommandHooksInterface {
-    beforeAll?: CommandHook[];
-    afterAll?: CommandHook[];
-    beforeCommand?: CommandHook[];
-    afterCommand?: CommandHook[];
-    onError?: CommandHook[];
+    beforeAll: HookConfig[];
+    afterAll: HookConfig[];
+    beforeCommand: HookConfig[];
+    afterCommand: HookConfig[];
+    onError: HookConfig[];
 }

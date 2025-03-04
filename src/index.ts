@@ -1,1 +1,1 @@
-export { default as Tesseract } from './core/tesseract';
+export { default as Tesseract } from './core/Tesseract';
