@@ -25,12 +25,27 @@ interface CommandHooksInterface {
     onError?: CommandHook[];
 }
 
+interface LogOptions {
+    timestamp?: boolean;
+    level?: boolean;
+    color?: boolean;
+}
+interface LoggerInterface {
+    debug(message: string, ...args: any[]): void;
+    info(message: string, ...args: any[]): void;
+    warning(message: string, ...args: any[]): void;
+    error(message: string, ...args: any[]): void;
+    setOptions(options: LogOptions): void;
+    getOptions(): LogOptions;
+}
+
 declare class Tesseract {
     root: string | null;
     command: string | null;
     config: TesseractConfigInterface | null;
     hooks: CommandHooksInterface;
-    constructor(root?: string, config?: TesseractConfigInterface | null);
+    private logger;
+    constructor(root?: string, config?: TesseractConfigInterface | null, logger?: LoggerInterface);
     /**
      * Add a hook for a specific event
      * @param event The event to hook into ('beforeAll', 'afterAll', 'beforeCommand', 'afterCommand', 'onError')
@@ -45,6 +60,14 @@ declare class Tesseract {
     private executeHooks;
     load(): Promise<Tesseract>;
     handle(): Promise<void>;
+    /**
+     * Get the logger instance
+     */
+    getLogger(): LoggerInterface;
+    /**
+     * Set a custom logger
+     */
+    setLogger(logger: LoggerInterface): void;
 }
 
 export { Tesseract };

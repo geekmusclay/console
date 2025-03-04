@@ -1,45 +1,82 @@
-export default class Logger {
-    Reset = "\x1b[0m"
-    Bright = "\x1b[1m"
-    Dim = "\x1b[2m"
-    Underscore = "\x1b[4m"
-    Blink = "\x1b[5m"
-    Reverse = "\x1b[7m"
-    Hidden = "\x1b[8m"
-    
-    FgBlack = "\x1b[30m"
-    FgRed = "\x1b[31m"
-    FgGreen = "\x1b[32m"
-    FgYellow = "\x1b[33m"
-    FgBlue = "\x1b[34m"
-    FgMagenta = "\x1b[35m"
-    FgCyan = "\x1b[36m"
-    FgWhite = "\x1b[37m"
-    FgGray = "\x1b[90m"
-    
-    BgBlack = "\x1b[40m"
-    BgRed = "\x1b[41m"
-    BgGreen = "\x1b[42m"
-    BgYellow = "\x1b[43m"
-    BgBlue = "\x1b[44m"
-    BgMagenta = "\x1b[45m"
-    BgCyan = "\x1b[46m"
-    BgWhite = "\x1b[47m"
-    BgGray = "\x1b[100m"
+import LoggerInterface, { LogLevel, LogOptions } from '../interfaces/LoggerInterface';
 
-    log(message: string): void {
-        console.log(message);
+const COLORS = {
+    reset: '\x1b[0m',
+    bright: '\x1b[1m',
+    dim: '\x1b[2m',
+    debug: '\x1b[36m',    // Cyan
+    info: '\x1b[32m',     // Green
+    warning: '\x1b[33m',  // Yellow
+    error: '\x1b[31m'     // Red
+};
+
+export default class ConsoleLogger implements LoggerInterface {
+    private options: LogOptions = {
+        timestamp: true,
+        level: true,
+        color: true
+    };
+
+    constructor(options?: LogOptions) {
+        if (options) {
+            this.options = { ...this.options, ...options };
+        }
     }
 
-    success(message: string): void {
-        console.log('\x1b[32m%s\x1b[0m', 'I am cyan');
+    private formatMessage(level: LogLevel, message: string, args: any[]): string {
+        let formattedMessage = '';
+
+        // Add timestamp if enabled
+        if (this.options.timestamp) {
+            formattedMessage += `${this.options.color ? COLORS.dim : ''}[${new Date().toISOString()}]${this.options.color ? COLORS.reset : ''} `;
+        }
+
+        // Add log level if enabled
+        if (this.options.level) {
+            const levelColor = this.options.color ? COLORS[level] : '';
+            const levelText = level.toUpperCase().padEnd(7);
+            formattedMessage += `${levelColor}${COLORS.bright}${levelText}${COLORS.reset} `;
+        }
+
+        // Add message
+        formattedMessage += message;
+
+        // Add additional arguments if present
+        if (args.length > 0) {
+            formattedMessage += ' ';
+            args.forEach(arg => {
+                if (typeof arg === 'object') {
+                    formattedMessage += JSON.stringify(arg, null, 2);
+                } else {
+                    formattedMessage += arg.toString();
+                }
+            });
+        }
+
+        return formattedMessage;
     }
 
-    warning(message: string): void {
-        console.log('\x1b[33m%s\x1b[0m', 'I am cyan');
+    debug(message: string, ...args: any[]): void {
+        console.debug(this.formatMessage('debug', message, args));
     }
 
-    error(message: string): void {
-        console.log('\x1b[31m%s\x1b[0m', 'I am cyan');
+    info(message: string, ...args: any[]): void {
+        console.info(this.formatMessage('info', message, args));
+    }
+
+    warning(message: string, ...args: any[]): void {
+        console.warn(this.formatMessage('warning', message, args));
+    }
+
+    error(message: string, ...args: any[]): void {
+        console.error(this.formatMessage('error', message, args));
+    }
+
+    setOptions(options: LogOptions): void {
+        this.options = { ...this.options, ...options };
+    }
+
+    getOptions(): LogOptions {
+        return { ...this.options };
     }
 }

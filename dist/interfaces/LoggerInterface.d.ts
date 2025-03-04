@@ -1,8 +1,10 @@
-import LoggerInterface, { LogOptions } from '../interfaces/LoggerInterface';
-export default class ConsoleLogger implements LoggerInterface {
-    private options;
-    constructor(options?: LogOptions);
-    private formatMessage;
+export type LogLevel = 'debug' | 'info' | 'warning' | 'error';
+export interface LogOptions {
+    timestamp?: boolean;
+    level?: boolean;
+    color?: boolean;
+}
+export default interface LoggerInterface {
     debug(message: string, ...args: any[]): void;
     info(message: string, ...args: any[]): void;
     warning(message: string, ...args: any[]): void;
