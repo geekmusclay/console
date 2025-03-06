@@ -223,5 +223,5 @@ class Tesseract {
     }
 }
 
-export { Tesseract };
+export { ConsoleLogger, Tesseract };
 //# sourceMappingURL=index.mjs.map

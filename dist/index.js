@@ -225,5 +225,6 @@ class Tesseract {
     }
 }
 
+exports.ConsoleLogger = ConsoleLogger;
 exports.Tesseract = Tesseract;
 //# sourceMappingURL=index.js.map

@@ -227,6 +227,7 @@
         }
     }
 
+    exports.ConsoleLogger = ConsoleLogger;
     exports.Tesseract = Tesseract;
 
 }));
