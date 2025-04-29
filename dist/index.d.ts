@@ -66,6 +66,30 @@ declare class Tesseract {
     load(): Promise<Tesseract>;
     handle(): Promise<void>;
     /**
+     * Apply a transformation to a value based on the specified transform type.
+     *
+     * @param {string} value - The value to transform
+     * @param {string} transform - The type of transformation to apply
+     * @returns {string} The transformed value
+     */
+    private applyTransformation;
+    /**
+     * Convertit une chaîne en format camelCase vers le format snake_case.
+     *
+     * Cette fonction transforme une chaîne de caractères du format camelCase
+     * (ou PascalCase) vers le format snake_case. Par exemple, "coucouLesGens"
+     * ou "CoucouLesGens" seront convertis en "coucou_les_gens".
+     *
+     * @param {string} camelCaseString - La chaîne en format camelCase ou PascalCase à convertir
+     * @returns {string} La chaîne convertie en format snake_case
+     *
+     * @example
+     * camelToSnakeCase("helloWorld"); // Retourne "hello_world"
+     * camelToSnakeCase("CoucouLesGens"); // Retourne "coucou_les_gens"
+     * camelToSnakeCase("ABC"); // Retourne "a_b_c"
+     */
+    private camelToSnakeCase;
+    /**
      * Get the logger instance
      */
     getLogger(): LoggerInterface;

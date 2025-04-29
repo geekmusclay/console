@@ -197,8 +197,27 @@
                     this.logger.info(`Processing file: ${from} -> ${to}`);
                     let file = fs.readFileSync(from).toString();
                     for (const [key, value] of Object.entries(params)) {
-                        to = to.replace(`{${key}}`, value);
-                        file = file.toString().replace(`{${key}}`, value);
+                        // Handle basic replacement
+                        to = to.replace(new RegExp(`{${key}}`, 'g'), value);
+                        file = file.replace(new RegExp(`{${key}}`, 'g'), value);
+                        // Handle transformations
+                        const transformRegex = new RegExp(`{${key}\\|(\\w+)}`, 'g');
+                        let match;
+                        // Process transformations in the destination path
+                        to = to.replace(transformRegex, (_, transform) => {
+                            this.logger.debug(`Transforming ${key} with ${transform}`);
+                            return this.applyTransformation(value, transform);
+                        });
+                        this.logger.debug(`Key: ${key}, Value: ${value}`);
+                        this.logger.debug(`Transformed path: ${to}`);
+                        // Create directories from destination path
+                        const path = to.split('/').slice(0, -1).join('/');
+                        if (false === fs.existsSync(path)) {
+                            this.logger.info(`Creating directory: ${path}`);
+                            fs.mkdirSync(path, { recursive: true });
+                        }
+                        // Process transformations in the file content
+                        file = file.replace(transformRegex, (_, transform) => this.applyTransformation(value, transform));
                     }
                     fs.writeFileSync(to, file);
                     this.logger.info(`File written successfully: ${to}`);
@@ -212,6 +231,58 @@
                 await this.executeHooks('onError', error);
                 throw error;
             }
+        }
+        /**
+         * Apply a transformation to a value based on the specified transform type.
+         *
+         * @param {string} value - The value to transform
+         * @param {string} transform - The type of transformation to apply
+         * @returns {string} The transformed value
+         */
+        applyTransformation(value, transform) {
+            switch (transform) {
+                case 'lower':
+                    return value.toLowerCase();
+                case 'upper':
+                    return value.toUpperCase();
+                case 'capitalize':
+                    return value.charAt(0).toUpperCase() + value.slice(1);
+                case 'snake':
+                    return value.replace(/ /g, '_');
+                case 'camelToSnake':
+                    return this.camelToSnakeCase(value);
+                default:
+                    return value;
+            }
+        }
+        /**
+         * Convertit une chaîne en format camelCase vers le format snake_case.
+         *
+         * Cette fonction transforme une chaîne de caractères du format camelCase
+         * (ou PascalCase) vers le format snake_case. Par exemple, "coucouLesGens"
+         * ou "CoucouLesGens" seront convertis en "coucou_les_gens".
+         *
+         * @param {string} camelCaseString - La chaîne en format camelCase ou PascalCase à convertir
+         * @returns {string} La chaîne convertie en format snake_case
+         *
+         * @example
+         * camelToSnakeCase("helloWorld"); // Retourne "hello_world"
+         * camelToSnakeCase("CoucouLesGens"); // Retourne "coucou_les_gens"
+         * camelToSnakeCase("ABC"); // Retourne "a_b_c"
+         */
+        camelToSnakeCase(camelCaseString) {
+            if (!camelCaseString) {
+                return '';
+            }
+            // Conversion de la chaîne avec un underscore avant chaque majuscule
+            // puis conversion en minuscule et suppression du premier underscore si présent
+            return camelCaseString
+                // Ajout d'un underscore avant chaque lettre majuscule 
+                .replace(/([A-Z])/g, '_$1')
+                // Convertir toute la chaîne en minuscules
+                .toLowerCase()
+                // Supprimer le premier underscore si la chaîne commençait par une majuscule
+                .replace(/^_/, '');
         }
         /**
          * Get the logger instance
