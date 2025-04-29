@@ -51,7 +51,7 @@ This is an example configuration file :
 
 ### In Node.js (CommonJS)
 ```javascript
-import { Tesseract } from '../src';
+const { Tesseract } = require('@geekmusclay/console');
 
 const terminal = new Tesseract('./tesseract.json');
 
@@ -104,19 +104,6 @@ terminal.hook('beforeAll', () => {
 });
 
 terminal.load().handle();
-```
-
-### In Browser (UMD)
-```html
-<script src="node_modules/@geekmusclay/console/dist/index.umd.js"></script>
-<script>
-    const terminal = new GeekmusclayCLI.Tesseract('./config.json');
-    terminal.hook('beforeAll', () => {
-        console.log('beforeAll');
-    });
-
-    terminal.load().handle();
-</script>
 ```
 
 ## License
